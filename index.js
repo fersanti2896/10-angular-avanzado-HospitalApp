@@ -12,16 +12,14 @@ const app = express();
 /* Configuración a CORS */
 app.use( cors() );
 
+/* Lectura y parseo del body (al hacer la petición) */
+app.use( express.json() );
+
 /* Conexion a DB */
 dbConnection();
 
-/* Rutas */
-app.get( '/', (req, res) => {
-    res.json({
-        ok: true,
-        msg: 'Hola mundo'
-    })
-})
+/* Rutas con middlewere: Ruta | Archivo Router */
+app.use( '/api/usuarios', require('./routes/usuariosRoutes') );
 
 app.listen( process.env.PORT, () => {
     console.log('Servidor corriendo en', process.env.PORT);
