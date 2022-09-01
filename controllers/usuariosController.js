@@ -1,4 +1,5 @@
 
+const { response } = require('express')
 const Usuario = require('../models/usuario');
 
 const getUsuarios = async(req, res) => {
@@ -10,18 +11,38 @@ const getUsuarios = async(req, res) => {
     });
 }
 
-const postUsuario = async(req, res) => {
+const postUsuario = async(req, res = response) => {
     /* Leyendo el body */
     const { nombre, password, email } = req.body;
-    const usuario = new Usuario( req.body );
 
-    /* Grabando en la BD */
-    await usuario.save()
+    try {
+        /* Validando si el usuario ya existe */
+        const existeEmail = await Usuario.findOne({ email });
 
-    res.json({
-        ok: true,
-        usuario
-    });
+        if( existeEmail ) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'El correo ya está registrado!'
+            })
+        }
+
+        const usuario = new Usuario( req.body );
+
+        /* Grabando en la BD */
+        await usuario.save()
+
+        res.json({
+            ok: true,
+            usuario
+        });
+    } catch (error) {
+        console.log(error);
+
+        res.status(500).json({
+            ok: false,
+            msg: 'Error inesperado, revisar logs!'
+        });
+    }   
 }
 
 module.exports = {
