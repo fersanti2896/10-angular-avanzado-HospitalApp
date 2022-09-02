@@ -1,6 +1,5 @@
 
 const { response } = require('express');
-const { validationResult } = require('express-validator')
 const Usuario = require('../models/usuario');
 
 const getUsuarios = async(req, res) => {
@@ -15,15 +14,6 @@ const getUsuarios = async(req, res) => {
 const postUsuario = async(req, res = response) => {
     /* Leyendo el body */
     const { nombre, password, email } = req.body;
-    
-    const errores = validationResult( req );
-
-    if( !errores.isEmpty() ) {
-        return res.status(400).json({
-            ok: false,
-            errors: errores.mapped()
-        });
-    }
 
     try {
         /* Validando si el usuario ya existe */
