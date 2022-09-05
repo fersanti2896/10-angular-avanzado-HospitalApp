@@ -5,7 +5,7 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');
 
-const { getUsuarios, postUsuario } = require('../controllers/usuariosController');
+const { getUsuarios, postUsuario, putUsuario } = require('../controllers/usuariosController');
 
 const router = Router();
 
@@ -19,5 +19,13 @@ router.post( '/', [
     check('email', '¡El email es obligatorio!').isEmail(),
     validarCampos /* Se hace el llamado al middleware */
 ], postUsuario );
+
+/* PUT: Ruta | Controlador */
+router.put( '/:id', [
+    check('nombre', '¡El nombre es obligatorio!').not().isEmpty(),
+    check('email', '¡El email es obligatorio!').isEmail(),
+    check('role', '¡El rol es obligatorio!').not().isEmpty(),
+    validarCampos /* Se hace el llamado al middleware */
+], putUsuario );
 
 module.exports = router;
