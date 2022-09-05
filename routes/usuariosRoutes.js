@@ -5,12 +5,12 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');
 
-const { getUsuarios, postUsuario, putUsuario } = require('../controllers/usuariosController');
+const { getUsers, postUser, putUser, deleteUser } = require('../controllers/usuariosController');
 
 const router = Router();
 
 /* GET: Ruta | Controlador */
-router.get( '/', getUsuarios );
+router.get( '/', getUsers );
 
 /* POST: Ruta | Middlewere | Controlador */
 router.post( '/', [
@@ -18,7 +18,7 @@ router.post( '/', [
     check('password', '¡El password es obligatorio!').not().isEmpty(),
     check('email', '¡El email es obligatorio!').isEmail(),
     validarCampos /* Se hace el llamado al middleware */
-], postUsuario );
+], postUser );
 
 /* PUT: Ruta | Controlador */
 router.put( '/:id', [
@@ -26,6 +26,9 @@ router.put( '/:id', [
     check('email', '¡El email es obligatorio!').isEmail(),
     check('role', '¡El rol es obligatorio!').not().isEmpty(),
     validarCampos /* Se hace el llamado al middleware */
-], putUsuario );
+], putUser );
+
+/* DELETE: Ruta */
+router.delete( '/:id', deleteUser );
 
 module.exports = router;

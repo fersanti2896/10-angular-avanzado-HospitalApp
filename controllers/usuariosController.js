@@ -3,7 +3,7 @@ const { response } = require('express');
 const Usuario = require('../models/usuario');
 const bcryptjs = require('bcryptjs');
 
-const getUsuarios = async(req, res) => {
+const getUsers = async(req, res) => {
     const usuarios = await Usuario.find({}, 'nombre email role google');
 
     res.json({
@@ -12,7 +12,7 @@ const getUsuarios = async(req, res) => {
     });
 }
 
-const postUsuario = async(req, res = response) => {
+const postUser = async(req, res = response) => {
     /* Leyendo el body */
     const { nombre, password, email } = req.body;
 
@@ -50,7 +50,7 @@ const postUsuario = async(req, res = response) => {
     }   
 }
 
-const putUsuario = async( req, res = response ) => {
+const putUser = async( req, res = response ) => {
     const uid = req.params.id;
 
     try {
@@ -96,8 +96,37 @@ const putUsuario = async( req, res = response ) => {
     }
 }
 
+const deleteUser = async( req, res = response ) => {
+    const uid = req.params.id;
+
+    try {
+        const usuarioDB = await Usuario.findById( uid );
+
+        if( !usuarioDB ) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'No existe un usuario con ese uid'
+            });
+        }
+
+        await Usuario.findByIdAndDelete(uid);
+
+        res.status(200).json({
+            ok: true,
+            msg: 'Usuario eliminado!'
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Error inesperado!'
+        })
+    }
+} 
+
 module.exports = {
-    getUsuarios,
-    postUsuario,
-    putUsuario
+    getUsers,
+    postUser,
+    putUser,
+    deleteUser
 }
