@@ -66,12 +66,10 @@ const putUsuario = async( req, res = response ) => {
         /* Validar token y comprobar si el usuario es el correcto */
 
         /* Actualizando el usuario en DB */
-        const campos = req.body;
+        const { password, google, email, ...campos } = req.body;
 
-        if( usuarioDB.email === req.body.email ) {
-            delete campos.email;
-        } else {
-            const existeEmail = await Usuario.findOne({ email: req.body.email });
+        if( usuarioDB.email !== email ) {
+            const existeEmail = await Usuario.findOne({ email });
 
             if( existeEmail ) {
                 return res.status(400).json({
@@ -79,10 +77,9 @@ const putUsuario = async( req, res = response ) => {
                     msg: 'Ya existe un usuario con ese email'
                 });
             }
-        }        
+        }
 
-        delete campos.password;
-        delete campos.google;
+        campos.email = email;
 
         const usuarioActualizado = await Usuario.findByIdAndUpdate( uid, campos, { new: true } );
 
