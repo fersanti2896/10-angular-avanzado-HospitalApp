@@ -2,6 +2,7 @@
 const { response } = require('express');
 const Usuario = require('../models/usuario');
 const bcryptjs = require('bcryptjs');
+const { generarJWT } = require('../helpers/jwt');
 
 const getUsers = async(req, res) => {
     const usuarios = await Usuario.find({}, 'nombre email role google');
@@ -36,9 +37,13 @@ const postUser = async(req, res = response) => {
         /* Grabando en la BD */
         await usuario.save()
 
+        /* Generar el JWT */
+        const token = await generarJWT( usuario.id );
+
         res.json({
             ok: true,
-            usuario
+            usuario,
+            token
         });
     } catch (error) {
         console.log(error);
